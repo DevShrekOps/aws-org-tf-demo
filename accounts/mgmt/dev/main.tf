@@ -3,3 +3,8 @@
 module "account_baseline" {
   source = "../../../modules/account-baseline"
 }
+
+# This module declares all resources specific to management accounts.
+module "mgmt_resources" {
+  source = "../resources"
+}
