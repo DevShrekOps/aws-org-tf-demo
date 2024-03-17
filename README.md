@@ -8,6 +8,12 @@ Each AWS account in this demo is represented by its own Terraform root module in
 
 In the future, it might make sense to have multiple root modules representing different aspects of the same account. But for now having one root module per account is the simplest approach.
 
+## Modules
+
+The **modules/** directory contains Terraform child modules. For example, the **account-baseline** module declares a baseline set of resources that's created in every AWS account in this demo.
+
+In the future, it might make sense to store each module in its own repo and/or version each module individually. But for now storing all modules in the same repo without separate versioning is the simplest approach.
+
 ## Manual Actions
 
 Although the goal of this demo is to perform all actions via Terraform, there'll inevitably be a need to perform some actions manually (e.g., via the AWS console). Each root module will include a **README.md** file with a log of manual actions that were performed in the associated account.
