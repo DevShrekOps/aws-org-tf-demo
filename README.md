@@ -6,6 +6,10 @@ Demo multi-account AWS Organization created mostly with Terraform.
 
 Each AWS account in this demo is represented by its own Terraform root module in the **accounts/\<account-type>/\<stage>/** directory. For example, the root module for the dev management account is located in **accounts/mgmt/dev/**.
 
+Each account type has its own **resources** child module in the **accounts/\<account-type>/resources/** directory that declares all resources specific to the account type. For example, the **resources** child module for management accounts is located in **accounts/mgmt/resources/** and it declares all the resources specific to management accounts.
+
+The **resources** child module is called by each root module representing an account of the same type. For example, the **resources** child module for management accounts is called by the root modules for both the prod & dev management accounts. This helps reduce duplication and lower the risk of drift between prod & dev versions of the same account type.
+
 In the future, it might make sense to have multiple root modules representing different aspects of the same account. But for now having one root module per account is the simplest approach.
 
 ## Modules
