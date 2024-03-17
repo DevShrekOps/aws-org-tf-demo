@@ -45,3 +45,11 @@ I chose the minimum version of the AWS provider by reviewing its [change log](ht
 For maximum version, I decided to allow upgrades to both the minor & patch version (as opposed to just the patch version) to strike a pragmatic balance between ease of upgrading the provider and avoiding an unintentional breaking change.
 
 I'll rely on the dependency lock file to enforce a specific version (e.g., among my development system and future pipeline) between upgrades.
+
+## Providers
+
+This repo follows the common practice of creating a file named **providers.tf** in each Terraform root module. This file declares the configuration of each provider that's required by the module. I like storing this config in a separate file because typically provider config is sought out in isolation (as opposed to in combination with other aspects of the module, like resource declarations).
+
+Within each **providers.tf**, the AWS provider is configured to use the **tf-deployer-(prod|dev)** role to deploy resources into the **us-east-1** region of a specific account. This prevents accidental deployment into the wrong account and/or region.
+
+It's up to the developer or pipeline that's performing the deployment to provide AWS credentials to Terraform with sufficient permissions to assume the specified role in the specified account. As "the developer" for this demo, I'll configure the AWS CLI on my development system with two named profiles, one for the **donkey** SSO user in **mgmt-prod**, and the other for the **donkey** SSO user in **mgmt-dev**. These SSO users will have sufficient permissions to assume the specified role in all accounts in the prod & dev orgs respectively. I'll set the **AWS_PROFILE** environment variable to the appropriate profile name before performing a deployment. If I forget to do so or if I set the environment variable to the wrong profile name, then the deployment will fail (which is much better than deploying resources into the wrong account).
