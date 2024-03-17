@@ -7,4 +7,6 @@ module "account_baseline" {
 # This module declares all resources specific to management accounts.
 module "mgmt_resources" {
   source = "../resources"
+
+  stage = "dev"
 }
