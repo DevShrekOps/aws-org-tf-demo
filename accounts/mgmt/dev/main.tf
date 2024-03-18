@@ -2,6 +2,9 @@
 # in this demo.
 module "account_baseline" {
   source = "../../../modules/account-baseline"
+
+  stage        = "dev"
+  account_type = "mgmt"
 }
 
 # This module declares all resources specific to management accounts.
