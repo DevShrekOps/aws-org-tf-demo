@@ -1,4 +1,20 @@
 ## -------------------------------------------------------------------------------------
+## ORGANIZATION
+## -------------------------------------------------------------------------------------
+
+# Declare an org resource so that manually-created orgs can be imported into and managed
+# by Terraform as additional service integrations & policy types are enabled over time.
+resource "aws_organizations_organization" "main" {
+  # Required for key features (e.g., integration with IAM Identity Center)
+  feature_set = "ALL"
+
+  # Integrate the org with other services (e.g., IAM Identity Center)
+  aws_service_access_principals = [
+    "sso.amazonaws.com", # IAM Identity Center
+  ]
+}
+
+## -------------------------------------------------------------------------------------
 ## TERRAFORM STATE S3 BACKEND
 ## -------------------------------------------------------------------------------------
 
