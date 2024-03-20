@@ -15,6 +15,22 @@ resource "aws_organizations_organization" "main" {
 }
 
 ## -------------------------------------------------------------------------------------
+## IAM IDENTITY CENTER (SSO)
+## -------------------------------------------------------------------------------------
+
+# At this time, the Terraform AWS provider only provides a data source (not a resource)
+# for IAM Identity Center instances. The data source doesn't allow the manually-created
+# instance to be imported into and managed by Terraform, but at least it provides access
+# to its attributes.
+data "aws_ssoadmin_instances" "main" {}
+
+# Store as local values for easier referencing
+locals {
+  sso_instance_arn      = tolist(data.aws_ssoadmin_instances.main.arns)[0]
+  sso_identity_store_id = tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0]
+}
+
+## -------------------------------------------------------------------------------------
 ## TERRAFORM STATE S3 BACKEND
 ## -------------------------------------------------------------------------------------
 
