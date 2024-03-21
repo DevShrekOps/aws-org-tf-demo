@@ -30,6 +30,13 @@ locals {
   sso_identity_store_id = tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0]
 }
 
+resource "aws_identitystore_group" "org_admins" {
+  display_name = "org-admins-${var.stage}"
+  description  = "Grants full admin access to all accounts in the ${var.stage} org"
+
+  identity_store_id = local.sso_identity_store_id
+}
+
 ## -------------------------------------------------------------------------------------
 ## TERRAFORM STATE S3 BACKEND
 ## -------------------------------------------------------------------------------------

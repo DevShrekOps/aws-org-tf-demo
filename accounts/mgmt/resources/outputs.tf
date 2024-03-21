@@ -3,6 +3,11 @@ output "org_accounts" {
   value       = aws_organizations_organization.main.accounts
 }
 
+output "org_admins_sso_group_id" {
+  description = "ID of the org-admins-<stage> SSO Group."
+  value       = aws_identitystore_group.org_admins.group_id
+}
+
 output "org_id" {
   description = "Organization ID."
   value       = aws_organizations_organization.main.id
