@@ -30,6 +30,26 @@ locals {
   sso_identity_store_id = tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0]
 }
 
+# The AWS-managed AdministratorAccess IAM policy that exists in every account.
+data "aws_iam_policy" "full_admin" {
+  name = "AdministratorAccess"
+}
+
+resource "aws_ssoadmin_permission_set" "full_admin" {
+  name             = "full-admin-access-${var.stage}"
+  description      = "Grants full admin access to a ${var.stage} account"
+  session_duration = "PT12H" # 12 hours
+
+  instance_arn = local.sso_instance_arn
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "full_admin" {
+  managed_policy_arn = data.aws_iam_policy.full_admin.arn
+  permission_set_arn = aws_ssoadmin_permission_set.full_admin.arn
+
+  instance_arn = local.sso_instance_arn
+}
+
 resource "aws_identitystore_group" "org_admins" {
   display_name = "org-admins-${var.stage}"
   description  = "Grants full admin access to all accounts in the ${var.stage} org"
