@@ -1,3 +1,8 @@
+output "full_admin_sso_perm_set_arn" {
+  description = "ARN of the full-admin-access-<stage> SSO permission set."
+  value       = aws_ssoadmin_permission_set.full_admin.arn
+}
+
 output "org_accounts" {
   description = "Metadata of all accounts in the organization."
   value       = aws_organizations_organization.main.accounts
