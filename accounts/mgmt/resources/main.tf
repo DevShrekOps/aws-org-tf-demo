@@ -1,4 +1,18 @@
 ## -------------------------------------------------------------------------------------
+## COMMON DATA SOURCES & LOCAL VALUES
+## -------------------------------------------------------------------------------------
+
+# Fetch the account ID & partition of the current AWS account
+data "aws_caller_identity" "main" {}
+data "aws_partition" "main" {}
+
+# Store as local values for easier referencing
+locals {
+  account_id = data.aws_caller_identity.main.account_id
+  partition  = data.aws_partition.main.partition
+}
+
+## -------------------------------------------------------------------------------------
 ## ORGANIZATION
 ## -------------------------------------------------------------------------------------
 
@@ -48,6 +62,12 @@ resource "aws_ssoadmin_managed_policy_attachment" "full_admin" {
   permission_set_arn = aws_ssoadmin_permission_set.full_admin.arn
 
   instance_arn = local.sso_instance_arn
+
+  # The Terraform AWS provider docs state that an explicit dependency on account
+  # assignments is necessary "to ensure proper deletion order" if this resource is
+  # deleted "because destruction of a managed policy attachment resource also
+  # re-provisions the associated permission set to all accounts."
+  depends_on = [aws_ssoadmin_account_assignment.org_admins_full_admin_mgmt]
 }
 
 resource "aws_identitystore_group" "org_admins" {
@@ -55,6 +75,19 @@ resource "aws_identitystore_group" "org_admins" {
   description  = "Grants full admin access to all accounts in the ${var.stage} org"
 
   identity_store_id = local.sso_identity_store_id
+}
+
+# Grant org admins full admin access to the management account
+resource "aws_ssoadmin_account_assignment" "org_admins_full_admin_mgmt" {
+  principal_type = "GROUP"
+  principal_id   = aws_identitystore_group.org_admins.group_id
+
+  permission_set_arn = aws_ssoadmin_permission_set.full_admin.arn
+
+  target_type = "AWS_ACCOUNT"
+  target_id   = local.account_id
+
+  instance_arn = local.sso_instance_arn
 }
 
 ## -------------------------------------------------------------------------------------
@@ -136,16 +169,6 @@ resource "aws_iam_role" "tf_state_manager" {
     name   = "manage-tf-state"
     policy = data.aws_iam_policy_document.tf_state_manager_inline.json
   }
-}
-
-# Fetch the account ID & partition of the current AWS account
-data "aws_caller_identity" "main" {}
-data "aws_partition" "main" {}
-
-# Store as local values for easier referencing
-locals {
-  account_id = data.aws_caller_identity.main.account_id
-  partition  = data.aws_partition.main.partition
 }
 
 data "aws_iam_policy_document" "tf_state_manager_trust" {
