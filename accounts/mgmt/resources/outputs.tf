@@ -32,3 +32,10 @@ output "sso_identity_store_id" {
   description = "Identity Store ID of the IAM Identity Center instance."
   value       = local.sso_identity_store_id
 }
+
+output "sso_user_ids" {
+  description = "Object of SSO users with username as key and user ID as value."
+  value = {
+    for sso_user in aws_identitystore_user.main : sso_user.user_name => sso_user.user_id
+  }
+}

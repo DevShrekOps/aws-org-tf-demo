@@ -11,5 +11,6 @@ module "account_baseline" {
 module "mgmt_resources" {
   source = "../resources"
 
-  stage = "dev"
+  stage     = "dev"
+  sso_users = local.sso_users # See sso_users.tf
 }
