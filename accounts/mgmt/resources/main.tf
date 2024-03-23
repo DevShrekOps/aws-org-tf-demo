@@ -90,6 +90,29 @@ resource "aws_ssoadmin_account_assignment" "org_admins_full_admin_mgmt" {
   instance_arn = local.sso_instance_arn
 }
 
+resource "aws_identitystore_user" "main" {
+  # Create a separate user for each element in var.sso_users. The for_each uses username
+  # as the key (as opposed to a numeric index) for more expressive plans & state files
+  # and so that if a user is removed from the list it doesn't impact other users.
+  for_each = { for sso_user in var.sso_users : sso_user.username => sso_user }
+
+  user_name    = each.key
+  display_name = each.value.display_name
+
+  emails {
+    value   = each.value.email
+    type    = "work"
+    primary = true
+  }
+
+  name {
+    given_name  = each.value.first_name
+    family_name = each.value.last_name
+  }
+
+  identity_store_id = local.sso_identity_store_id
+}
+
 ## -------------------------------------------------------------------------------------
 ## TERRAFORM STATE S3 BACKEND
 ## -------------------------------------------------------------------------------------

@@ -47,3 +47,9 @@ import {
     "arn:aws:sso:::instance/ssoins-722327f2538a7b72",
   ])
 }
+
+# Import the donkey SSO user that was manually created in this account.
+import {
+  to = module.mgmt_resources.aws_identitystore_user.main["donkey"]
+  id = "d-9067f854db/440804d8-c0f1-7055-31c6-50afd56932a4"
+}

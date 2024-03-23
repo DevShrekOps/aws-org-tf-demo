@@ -7,3 +7,19 @@ variable "stage" {
   type        = string
   nullable    = false
 }
+
+## -------------------------------------------------------------------------------------
+## OPTIONAL INPUT VARIABLES
+## -------------------------------------------------------------------------------------
+
+variable "sso_users" {
+  description = "SSO users to create in IAM Identity Center."
+  type = list(object({
+    username     = string
+    display_name = string
+    email        = string
+    first_name   = string
+    last_name    = string
+  }))
+  default = []
+}
