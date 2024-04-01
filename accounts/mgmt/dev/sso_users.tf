@@ -8,4 +8,8 @@ locals {
       last_name    = "Unknown"
     },
   ]
+
+  sso_org_admins = [
+    "donkey",
+  ]
 }
