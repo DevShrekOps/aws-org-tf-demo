@@ -53,3 +53,10 @@ import {
   to = module.mgmt_resources.aws_identitystore_user.main["donkey"]
   id = "d-9067f854db/440804d8-c0f1-7055-31c6-50afd56932a4"
 }
+
+# Import the group membership of the donkey SSO user in the org-admins-dev SSO group
+# that was manually configured in this account.
+import {
+  to = module.mgmt_resources.aws_identitystore_group_membership.org_admins["donkey"]
+  id = "d-9067f854db/5488c4d8-7011-70dc-1413-cbcf970d2cdd"
+}

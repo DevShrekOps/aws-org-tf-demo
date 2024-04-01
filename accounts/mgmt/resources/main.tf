@@ -90,6 +90,18 @@ resource "aws_ssoadmin_account_assignment" "org_admins_full_admin_mgmt" {
   instance_arn = local.sso_instance_arn
 }
 
+resource "aws_identitystore_group_membership" "org_admins" {
+  # The for_each uses username as the key (as opposed to a numeric index) for more
+  # expressive plans & state files and so that if a user is removed from the list it
+  # doesn't impact other users.
+  for_each = toset(var.sso_org_admins)
+
+  group_id  = aws_identitystore_group.org_admins.group_id
+  member_id = aws_identitystore_user.main[each.key].user_id
+
+  identity_store_id = local.sso_identity_store_id
+}
+
 resource "aws_identitystore_user" "main" {
   # Create a separate user for each element in var.sso_users. The for_each uses username
   # as the key (as opposed to a numeric index) for more expressive plans & state files
