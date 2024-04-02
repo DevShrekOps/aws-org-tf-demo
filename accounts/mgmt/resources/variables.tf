@@ -31,5 +31,6 @@ variable "sso_users" {
     first_name   = string
     last_name    = string
   }))
-  default = []
+  default  = []
+  nullable = false
 }
