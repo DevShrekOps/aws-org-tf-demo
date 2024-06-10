@@ -28,6 +28,34 @@ resource "aws_organizations_organization" "main" {
   ]
 }
 
+resource "aws_organizations_account" "main" {
+  # The for_each uses account key as the key (as opposed to a numeric index) for more
+  # expressive plans & state files and so that if an account is removed from the list it
+  # doesn't impact other accounts.
+  for_each = toset(var.account_keys)
+
+  name  = "demo-${each.key}-${var.stage}"
+  email = "devshrekops+demo-${each.key}-${var.stage}@gmail.com"
+
+  # An OU structure will be created in the future, but for now all accounts will go into
+  # the root of the org. This is the default behavior, but explicitly setting it anyway
+  # so that Terraform will perform drift detection on any manual changes to parent ID.
+  parent_id = aws_organizations_organization.main.roots[0].id
+
+  close_on_deletion          = true
+  iam_user_access_to_billing = "ALLOW"
+
+  role_name = "tf-deployer-${var.stage}"
+
+  lifecycle {
+    # Per the Terraform docs: "The Organizations API provides no method for reading this
+    # information after account creation, so Terraform cannot perform drift detection on
+    # its value and will always show a difference for a configured value after import
+    # unless ignore_changes is used."
+    ignore_changes = [role_name]
+  }
+}
+
 ## -------------------------------------------------------------------------------------
 ## IAM IDENTITY CENTER (SSO)
 ## -------------------------------------------------------------------------------------
