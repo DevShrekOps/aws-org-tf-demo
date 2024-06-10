@@ -12,6 +12,16 @@ variable "stage" {
 ## OPTIONAL INPUT VARIABLES
 ## -------------------------------------------------------------------------------------
 
+variable "account_keys" {
+  description = <<EOT
+    Keys of accounts to create in the org. An account's key is included in its name and
+    email.
+  EOT
+  type        = list(string)
+  default     = []
+  nullable    = false
+}
+
 variable "sso_org_admins" {
   description = <<EOT
     Usernames of SSO users to add to org admins group in IAM Identity Center. All users

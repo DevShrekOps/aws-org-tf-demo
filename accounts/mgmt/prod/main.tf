@@ -13,6 +13,9 @@ module "mgmt_resources" {
 
   stage = "prod"
 
+  # See accounts.tf
+  account_keys = local.account_keys
+
   # See sso_users.tf
   sso_users      = local.sso_users
   sso_org_admins = local.sso_org_admins
