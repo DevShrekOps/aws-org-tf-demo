@@ -1,3 +1,5 @@
 locals {
-  account_keys = []
+  account_keys = [
+    "sec", # security account
+  ]
 }
