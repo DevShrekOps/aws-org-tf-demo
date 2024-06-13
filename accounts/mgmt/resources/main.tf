@@ -48,11 +48,13 @@ resource "aws_organizations_account" "main" {
   role_name = "tf-deployer-${var.stage}"
 
   lifecycle {
-    # Per the Terraform docs: "The Organizations API provides no method for reading this
-    # information after account creation, so Terraform cannot perform drift detection on
-    # its value and will always show a difference for a configured value after import
-    # unless ignore_changes is used."
-    ignore_changes = [role_name]
+    # Configure Terraform to ignore changes to the iam_user_access_to_billing attribute
+    # so that Terraform doesn't plan to recreate management accounts when imported. Also
+    # ignore changes to role_name per the Terraform docs: "The Organizations API
+    # provides no method for reading this information after account creation, so
+    # Terraform cannot perform drift detection on its value and will always show a
+    # difference for a configured value after import unless ignore_changes is used."
+    ignore_changes = [iam_user_access_to_billing, role_name]
   }
 }
 
