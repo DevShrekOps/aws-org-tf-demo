@@ -3,6 +3,6 @@
 module "account_baseline" {
   source = "../../../modules/account-baseline"
 
-  stage        = "prod"
-  account_type = "sec"
+  stage       = "prod"
+  account_key = "sec"
 }

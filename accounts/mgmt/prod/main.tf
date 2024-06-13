@@ -3,8 +3,8 @@
 module "account_baseline" {
   source = "../../../modules/account-baseline"
 
-  stage        = "prod"
-  account_type = "mgmt"
+  stage       = "prod"
+  account_key = "mgmt"
 }
 
 # This module declares all resources specific to management accounts.
