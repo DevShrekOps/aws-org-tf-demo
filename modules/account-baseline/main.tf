@@ -6,7 +6,7 @@
 # and include "demo-" to reduce chance of naming collision with other DevShrekOps
 # projects.
 resource "aws_iam_account_alias" "main" {
-  account_alias = "devshrekops-demo-${var.account_type}-${var.stage}"
+  account_alias = "devshrekops-demo-${var.account_key}-${var.stage}"
 }
 
 ## -------------------------------------------------------------------------------------

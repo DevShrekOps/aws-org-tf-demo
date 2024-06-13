@@ -8,8 +8,8 @@ variable "stage" {
   nullable    = false
 }
 
-variable "account_type" {
-  description = "Account type (e.g., mgmt, sec, or net)."
+variable "account_key" {
+  description = "Account key (e.g., mgmt, sec, or net)."
   type        = string
   nullable    = false
 }
