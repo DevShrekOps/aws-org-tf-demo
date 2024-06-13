@@ -5,7 +5,18 @@ output "full_admin_sso_perm_set_arn" {
 
 output "org_accounts" {
   description = "Metadata of all accounts in the organization."
-  value       = aws_organizations_organization.main.accounts
+  # Don't use aws_organizations_organization.main.accounts for this because it doesn't
+  # update when a new account is created until the next `terraform apply` due to lack
+  # of a dependency on aws_organizations_account.main. It feels backward to add such a
+  # dependency.
+  value = {
+    for account_key, account in aws_organizations_account.main : account_key => {
+      arn   = account.arn,
+      email = account.email,
+      id    = account.id,
+      name  = account.name,
+    }
+  }
 }
 
 output "org_admins_sso_group_id" {
