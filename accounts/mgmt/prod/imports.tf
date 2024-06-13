@@ -60,3 +60,9 @@ import {
   to = module.mgmt_resources.aws_identitystore_group_membership.org_admins["donkey"]
   id = "d-9067fc28a6/34a8f488-a031-70f6-6346-11ed3628c66b"
 }
+
+# Import the management account that was manually created via the AWS website.
+import {
+  to = module.mgmt_resources.aws_organizations_account.main["mgmt"]
+  id = "339712815005"
+}
