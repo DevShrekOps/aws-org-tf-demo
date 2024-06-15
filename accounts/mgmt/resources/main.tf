@@ -97,7 +97,7 @@ resource "aws_ssoadmin_managed_policy_attachment" "full_admin" {
   # assignments is necessary "to ensure proper deletion order" if this resource is
   # deleted "because destruction of a managed policy attachment resource also
   # re-provisions the associated permission set to all accounts."
-  depends_on = [aws_ssoadmin_account_assignment.org_admins_full_admin_mgmt]
+  depends_on = [aws_ssoadmin_account_assignment.org_admins_full_admin]
 }
 
 resource "aws_identitystore_group" "org_admins" {
@@ -107,15 +107,17 @@ resource "aws_identitystore_group" "org_admins" {
   identity_store_id = local.sso_identity_store_id
 }
 
-# Grant org admins full admin access to the management account
-resource "aws_ssoadmin_account_assignment" "org_admins_full_admin_mgmt" {
+# Grant org admins full admin access to every account
+resource "aws_ssoadmin_account_assignment" "org_admins_full_admin" {
+  for_each = aws_organizations_account.main
+
   principal_type = "GROUP"
   principal_id   = aws_identitystore_group.org_admins.group_id
 
   permission_set_arn = aws_ssoadmin_permission_set.full_admin.arn
 
   target_type = "AWS_ACCOUNT"
-  target_id   = local.account_id
+  target_id   = each.value.id
 
   instance_arn = local.sso_instance_arn
 }

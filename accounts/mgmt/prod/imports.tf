@@ -37,7 +37,7 @@ import {
 # Import the assignment of the org-admins-prod SSO group with the full-admin-access-prod
 # SSO permission set to the mgmt-prod account that was manually created in this account.
 import {
-  to = module.mgmt_resources.aws_ssoadmin_account_assignment.org_admins_full_admin_mgmt
+  to = module.mgmt_resources.aws_ssoadmin_account_assignment.org_admins_full_admin["mgmt"]
   id = join(",", [
     "04183448-d091-70b1-7e76-5f2ebfdc549e",
     "GROUP",
@@ -46,6 +46,12 @@ import {
     "arn:aws:sso:::permissionSet/ssoins-72232a1562dbd133/ps-a095036f1fc365cf",
     "arn:aws:sso:::instance/ssoins-72232a1562dbd133",
   ])
+}
+
+# Moved due to refactoring when granting org admins access to all accounts in the org.
+moved {
+  from = module.mgmt_resources.aws_ssoadmin_account_assignment.org_admins_full_admin_mgmt
+  to   = module.mgmt_resources.aws_ssoadmin_account_assignment.org_admins_full_admin["mgmt"]
 }
 
 # Import the donkey SSO user that was manually created in this account.
