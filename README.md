@@ -32,9 +32,9 @@ This role is granted full admin access to its account. In a locked down environm
 
 ## Version Constraints
 
-This repo follows the common practice of creating a file named **versions.tf** in each Terraform root & child module. This file declares the providers that are required by the module along with version constraints of each provider and Terraform itself. I like storing this info in a separate file because typically versioning info is sought out in isolation (as opposed to in combination with other aspects of the module, like resource declarations).
+In each Terraform root & child module, there's a file named **config.tf** that contains configuration related to Terraform, providers, & state. Within this file there's a "VERSIONS" section that declares the providers that are required by the module along with version constraints of each provider and Terraform itself. I like storing this info in a different file than **main.tf** because typically versioning info is sought out separately from resource declarations.
 
-Within **versions.tf**, this repo follows this guidance from HashiCorp's [Manage Terraform versions](https://developer.hashicorp.com/terraform/tutorials/configuration-language/versions) doc:
+This repo follows this guidance from HashiCorp's [Manage Terraform versions](https://developer.hashicorp.com/terraform/tutorials/configuration-language/versions) doc:
 
 > In general, we encourage you to use the latest available version of Terraform to take advantage of the most recent features and bug fixes.
 
@@ -42,7 +42,7 @@ And:
 
 > As a best practice, consider using ~> style version constraints to pin your major and minor Terraform version. Doing so will allow you and your team to use patch version updates without updating your Terraform configuration. You can then plan when you want to upgrade your configuration to use a new version of Terraform, and carefully review the changes to ensure that your project still works as intended.
 
-Within **versions.tf**, this repo follows this guidance from HashiCorp's [Provider Requirements](https://developer.hashicorp.com/terraform/language/providers/requirements#version-constraints) doc:
+This repo also follows this guidance from HashiCorp's [Provider Requirements](https://developer.hashicorp.com/terraform/language/providers/requirements#version-constraints) doc:
 
 > Each module should at least declare the minimum provider version it is known to work with, using the >= version constraint syntax:
 
@@ -58,17 +58,17 @@ I'll rely on the dependency lock file to enforce a specific version (e.g., among
 
 ## Providers
 
-This repo follows the common practice of creating a file named **providers.tf** in each Terraform root module. This file declares the configuration of each provider that's required by the module. I like storing this config in a separate file because typically provider config is sought out in isolation (as opposed to in combination with other aspects of the module, like resource declarations).
+In **config.tf** in each Terraform root module, there's a "PROVIDERS" section that declares the configuration of each provider that's required by the module. I like storing this config in a different file than **main.tf** because typically provider config is sought out separately from resource declarations.
 
-Within each **providers.tf**, the AWS provider is configured to use the **tf-deployer-(prod|dev)** role to deploy resources into the **us-east-1** region of a specific account. This prevents accidental deployment into the wrong account and/or region.
+The AWS provider is configured to use the **tf-deployer-(prod|dev)** role to deploy resources into the **us-east-1** region of a specific account. This prevents accidental deployment into the wrong account and/or region.
 
 It's up to the developer or pipeline that's performing the deployment to provide AWS credentials to Terraform with sufficient permissions to assume the specified role in the specified account. As "the developer" for this demo, I'll configure the AWS CLI on my development system with two named profiles, one for the **donkey** SSO user in **mgmt-prod**, and the other for the **donkey** SSO user in **mgmt-dev**. These SSO users will have sufficient permissions to assume the specified role in all accounts in the prod & dev orgs respectively. I'll set the **AWS_PROFILE** environment variable to the appropriate profile name before performing a deployment. If I forget to do so or if I set the environment variable to the wrong profile name, then the deployment will fail (which is much better than deploying resources into the wrong account).
 
 ## State Management
 
-This repo follows the common practice of creating a file named **backend.tf** in each Terraform root module. This file configures how the module's state is managed. I like storing this config in a separate file because typically state management info is sought out in isolation (as opposed to in combination with other aspects of the module, like resource declarations).
+In **config.tf** in each Terraform root module, there's a "BACKEND" section that configures how the module's state is managed. I like storing this config in a separate file than **main.tf** because typically state management info is sought out separately from resource declarations.
 
-Within each **backend.tf**, Terraform is configured to use the **tf-state-manager-(prod|dev)** role to manage the module's state using an S3 backend. This is more resilient and team-friendly than storing state in a local state file (even if that file is checked into source control).
+Terraform is configured to use the **tf-state-manager-(prod|dev)** role to manage the module's state using an S3 backend. This is more resilient and team-friendly than storing state in a local state file (even if that file is checked into source control).
 
 State files are stored in an S3 bucket named **devshrekops-demo-tf-state-(prod|dev)** in the **us-east-1** region of the **mgmt-(prod|dev)** account. State locks are stored in a DynamoDB table named **tf-state-locks-(prod|dev)** in the same region of the same account. This prevents the module's state from being interacted with by multiple actors at the same time, which could otherwise result in conflicting deployments and state corruption.
 
