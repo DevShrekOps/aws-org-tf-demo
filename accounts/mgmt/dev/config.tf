@@ -1,4 +1,57 @@
-# See the Manual Action Log in README.md for details about manually-created resources.
+# See README.md in this repo's root directory for commentary on this file.
+
+## -------------------------------------------------------------------------------------
+## VERSIONS
+## -------------------------------------------------------------------------------------
+
+terraform {
+  required_providers {
+    aws = {
+      version = "~> 5.39"
+    }
+  }
+
+  required_version = "~> 1.7.0"
+}
+
+## -------------------------------------------------------------------------------------
+## PROVIDERS
+## -------------------------------------------------------------------------------------
+
+provider "aws" {
+  # Prevent accidental deployment into the wrong account
+  assume_role {
+    role_arn = "arn:aws:iam::533266992459:role/tf-deployer-dev"
+  }
+
+  # Prevent accidental deployment into the wrong region
+  region = "us-east-1"
+}
+
+## -------------------------------------------------------------------------------------
+## BACKEND
+## -------------------------------------------------------------------------------------
+
+# Since the bucket, table, & role referenced below are all declared in this root module,
+# those resources had to be deployed before adding this backend config. That means the
+# state for those resources was temporarily stored in a local `terraform.tfstate` file,
+# but after adding this backend config and re-initializing Terraform, the local state
+# was migrated to the bucket.
+terraform {
+  backend "s3" {
+    bucket         = "devshrekops-demo-tf-state-dev"
+    key            = "mgmt-dev"
+    dynamodb_table = "tf-state-locks-dev"
+    region         = "us-east-1"
+    assume_role = {
+      role_arn = "arn:aws:iam::533266992459:role/tf-state-manager-dev"
+    }
+  }
+}
+
+## -------------------------------------------------------------------------------------
+## IMPORTS & MOVED
+## -------------------------------------------------------------------------------------
 
 # Import the org that was manually created in this account when IAM Identity Center was
 # enabled.
