@@ -161,47 +161,23 @@ resource "aws_identitystore_user" "main" {
 ## TERRAFORM STATE S3 BACKEND
 ## -------------------------------------------------------------------------------------
 
-# Bucket for storing Terraform state files for all accounts belonging to this stage. In
-# the future, it might make sense to encrypt files in this bucket with a customer
-# managed KMS key for enhanced access control & logging (or just to check a compliance
-# box). But for now relying on the default SSE-S3 encryption is the simplest & cheapest
-# approach.
-resource "aws_s3_bucket" "tf_state" {
-  # Prefix with "devshrekops-" to reduce chance of naming collision with other customers
-  # and include "demo-" to reduce chance of naming collision with other DevShrekOps
-  # projects.
-  bucket = "devshrekops-demo-tf-state-${var.stage}"
+# S3 bucket for storing Terraform state files for all accounts belonging to this stage
+module "tf_state_baseline_s3_bucket" {
+  # This module declares an S3 bucket with a baseline configuration that should be used
+  # for all buckets in this git repo unless there's a specific reason not to.
+  source = "../../../modules/baseline-s3-bucket"
+
+  stage = var.stage
+  scope = "tf-state"
 }
 
 # Versioning makes it easier to recover deleted or corrupted state files
 resource "aws_s3_bucket_versioning" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
+  bucket = module.tf_state_baseline_s3_bucket.bucket_id
 
   versioning_configuration {
     status = "Enabled"
   }
-}
-
-# Disable ACLs because they're an unnecessary, legacy form of access control, instead
-# relying on bucket policies and IAM to govern access to the bucket.
-resource "aws_s3_bucket_ownership_controls" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
-
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-# Prevent a misconfiguration that could make the bucket publicly accessible. This
-# probably isn't necessary since I plan on enabling this control at the account layer.
-# At a minimum, it might check a compliance box.
-resource "aws_s3_bucket_public_access_block" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
 
 # Table for managing Terraform state locks for all accounts belonging to this stage. In
@@ -255,13 +231,13 @@ data "aws_iam_policy_document" "tf_state_manager_inline" {
   statement {
     effect    = "Allow"
     actions   = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.tf_state.arn]
+    resources = [module.tf_state_baseline_s3_bucket.bucket_arn]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["s3:GetObject", "s3:PutObject"]
-    resources = ["${aws_s3_bucket.tf_state.arn}/*"]
+    resources = ["${module.tf_state_baseline_s3_bucket.bucket_arn}/*"]
   }
 
   statement {
