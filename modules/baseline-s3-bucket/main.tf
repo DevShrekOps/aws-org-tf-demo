@@ -36,10 +36,11 @@ resource "aws_s3_bucket_policy" "main" {
   policy = data.aws_iam_policy_document.baseline_bucket_policy.json
 }
 
-# Require requests to be encrypted in transit with TLS v1.3 or newer (to future-proof).
-# In the future, it may become necessary to make the version configurable and/or lower
-# the default to v1.2, depending on the frequency of compatibility issues.
 data "aws_iam_policy_document" "baseline_bucket_policy" {
+  # Require requests to be encrypted in transit with TLS v1.3 or newer (to
+  # future-proof). In the future, it may become necessary to make the version
+  # configurable and/or lower the default to v1.2, depending on the frequency of
+  # compatibility issues.
   statement {
     sid    = "RequireLatestTLS"
     effect = "Deny"
@@ -61,4 +62,7 @@ data "aws_iam_policy_document" "baseline_bucket_policy" {
       values   = [1.3]
     }
   }
+
+  # Append any extra bucket policy documents that were passed in via a variable
+  source_policy_documents = var.extra_bucket_policy_documents
 }
