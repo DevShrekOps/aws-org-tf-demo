@@ -30,3 +30,35 @@ resource "aws_s3_bucket_public_access_block" "main" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_policy" "main" {
+  bucket = aws_s3_bucket.main.id
+  policy = data.aws_iam_policy_document.baseline_bucket_policy.json
+}
+
+# Require requests to be encrypted in transit with TLS v1.3 or newer (to future-proof).
+# In the future, it may become necessary to make the version configurable and/or lower
+# the default to v1.2, depending on the frequency of compatibility issues.
+data "aws_iam_policy_document" "baseline_bucket_policy" {
+  statement {
+    sid    = "RequireLatestTLS"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.main.arn,
+      "${aws_s3_bucket.main.arn}/*",
+    ]
+
+    condition {
+      test     = "NumericLessThan"
+      variable = "s3:TlsVersion"
+      values   = [1.3]
+    }
+  }
+}
