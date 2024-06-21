@@ -43,12 +43,8 @@ module "account_baseline" {
 module "mgmt_resources" {
   source = "../resources"
 
-  stage = "dev"
-
-  # See accounts.tf
-  account_keys = local.account_keys
-
-  # See sso_users.tf
+  stage          = "dev"
+  account_keys   = local.account_keys
   sso_users      = local.sso_users
   sso_org_admins = local.sso_org_admins
 }
