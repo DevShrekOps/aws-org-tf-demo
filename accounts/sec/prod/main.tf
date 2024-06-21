@@ -6,3 +6,10 @@ module "account_baseline" {
   stage       = "prod"
   account_key = "sec"
 }
+
+# This module declares all resources specific to security accounts.
+module "sec_resources" {
+  source = "../resources"
+
+  stage = "prod"
+}
