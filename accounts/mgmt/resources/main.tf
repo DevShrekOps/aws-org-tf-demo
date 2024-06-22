@@ -24,6 +24,7 @@ resource "aws_organizations_organization" "main" {
 
   # Integrate the org with other services (e.g., IAM Identity Center)
   aws_service_access_principals = [
+    "cloudtrail.amazonaws.com",
     "sso.amazonaws.com", # IAM Identity Center
   ]
 }
