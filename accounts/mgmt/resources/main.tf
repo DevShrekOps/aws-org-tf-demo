@@ -16,6 +16,13 @@ locals {
 ## ORGANIZATION
 ## -------------------------------------------------------------------------------------
 
+locals {
+  account_keys = [
+    "mgmt", # management account
+    "sec",  # security account
+  ]
+}
+
 # Declare an org resource so that manually-created orgs can be imported into and managed
 # by Terraform as additional service integrations & policy types are enabled over time.
 resource "aws_organizations_organization" "main" {
@@ -32,7 +39,7 @@ resource "aws_organizations_account" "main" {
   # The for_each uses account key as the key (as opposed to a numeric index) for more
   # expressive plans & state files and so that if an account is removed from the list it
   # doesn't impact other accounts.
-  for_each = toset(var.account_keys)
+  for_each = toset(local.account_keys)
 
   name  = "demo-${each.key}-${var.stage}"
   email = "devshrekops+demo-${each.key}-${var.stage}@gmail.com"
