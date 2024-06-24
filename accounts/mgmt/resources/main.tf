@@ -24,6 +24,7 @@ resource "aws_organizations_organization" "main" {
 
   # Integrate the org with other services (e.g., IAM Identity Center)
   aws_service_access_principals = [
+    "cloudtrail.amazonaws.com",
     "sso.amazonaws.com", # IAM Identity Center
   ]
 }
@@ -67,6 +68,15 @@ resource "aws_organizations_account" "main" {
     # difference for a configured value after import unless ignore_changes is used."
     ignore_changes = [iam_user_access_to_billing, role_name]
   }
+}
+
+# Enable the security account to create an org CloudTrail. There's probably not much
+# benefit (if any) to delegating creation to the security account (as opposed to the
+# management account creating it) unless the security & management accounts are managed
+# by separate teams, but I'm doing it anyway as a general best practice.
+resource "aws_organizations_delegated_administrator" "cloudtrail_sec" {
+  service_principal = "cloudtrail.amazonaws.com"
+  account_id        = aws_organizations_account.main["sec"].id
 }
 
 ## -------------------------------------------------------------------------------------
