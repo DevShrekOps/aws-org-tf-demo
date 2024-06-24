@@ -16,13 +16,6 @@ locals {
 ## ORGANIZATION
 ## -------------------------------------------------------------------------------------
 
-locals {
-  account_keys = [
-    "mgmt", # management account
-    "sec",  # security account
-  ]
-}
-
 # Declare an org resource so that manually-created orgs can be imported into and managed
 # by Terraform as additional service integrations & policy types are enabled over time.
 resource "aws_organizations_organization" "main" {
@@ -32,6 +25,17 @@ resource "aws_organizations_organization" "main" {
   # Integrate the org with other services (e.g., IAM Identity Center)
   aws_service_access_principals = [
     "sso.amazonaws.com", # IAM Identity Center
+  ]
+}
+
+locals {
+  # Keys of accounts to create in the org. An account's key is included in its name and
+  # email. If this list becomes inconveniently long, then it probably makes sense to
+  # move it to its own file, but for now I'd rather have this file be longer than there
+  # be more files in the directory.
+  account_keys = [
+    "mgmt", # management account
+    "sec",  # security account
   ]
 }
 
