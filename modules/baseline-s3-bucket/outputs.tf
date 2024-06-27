@@ -1,15 +1,32 @@
 output "bucket_id" {
-  description = "Name of this bucket."
-  value       = aws_s3_bucket.main.id
+  description = <<EOT
+    Name of this bucket. Safe to reference in resource declarations that depend on the
+    bucket policy.
+  EOT
 
-  # Ensure calling modules wait for the bucket's policy to be set before using the
-  # bucket so that resource declarations that depend on the bucket policy don't fail.
+  value = aws_s3_bucket.main.id
+
+  # Ensure resources that reference this output are created after the bucket policy
   depends_on = [aws_s3_bucket_policy.main]
 }
 
 output "bucket_arn" {
-  description = "ARN of this bucket."
-  value       = aws_s3_bucket.main.arn
+  description = <<EOT
+    ARN of this bucket. Safe to reference in resource declarations that depend on the
+    bucket policy.
+  EOT
 
-  depends_on = [aws_s3_bucket_policy.main] # See comment in bucket_id output
+  value = aws_s3_bucket.main.arn
+
+  # Ensure resources that reference this output are created after the bucket policy
+  depends_on = [aws_s3_bucket_policy.main]
+}
+
+output "unsafe_bucket_arn" {
+  description = <<EOT
+    ARN of this bucket. Not safe to reference in resource declarations that depend on
+    the bucket policy.
+  EOT
+
+  value = aws_s3_bucket.main.arn
 }
