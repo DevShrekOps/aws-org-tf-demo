@@ -79,6 +79,13 @@ resource "aws_organizations_delegated_administrator" "cloudtrail_sec" {
   account_id        = aws_organizations_account.main["sec"].id
 }
 
+# Normally this role is created automatically when creating an org CloudTrail via the
+# AWS console, but since I'm creating the trail and all of its prerequisites via
+# Terraform, this role must be explicitly created too.
+resource "aws_iam_service_linked_role" "cloudtrail" {
+  aws_service_name = "cloudtrail.amazonaws.com"
+}
+
 ## -------------------------------------------------------------------------------------
 ## IAM IDENTITY CENTER (SSO)
 ## -------------------------------------------------------------------------------------
