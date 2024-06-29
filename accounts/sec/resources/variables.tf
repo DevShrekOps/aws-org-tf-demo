@@ -7,3 +7,9 @@ variable "stage" {
   type        = string
   nullable    = false
 }
+
+variable "mgmt_account_id" {
+  description = "ID of the management account for this stage."
+  type        = string
+  nullable    = false
+}

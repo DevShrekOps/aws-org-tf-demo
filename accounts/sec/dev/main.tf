@@ -11,5 +11,6 @@ module "account_baseline" {
 module "sec_resources" {
   source = "../resources"
 
-  stage = "dev"
+  stage           = "dev"
+  mgmt_account_id = "533266992459"
 }
