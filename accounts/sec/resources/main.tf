@@ -83,6 +83,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "log" {
 # advanced event selector to log both management & data events, especially S3 data
 # events. However, if you do so, make sure to explicitly exclude the CloudTrail log
 # bucket from the event selector, so as not to create an infinite loop.
+# ---
+# There was an "InvalidTrailNameException" error during initial creation of this trail
+# in both dev & prod. In both cases, the problem was fixed by rerunning `terraform
+# apply` to recreate the trail. I suspect an issue in the AWS provider related to org
+# trail creation by a delegated admin, but given that it worked upon recreation, it
+# doesn't seem worth pursuing.
 resource "aws_cloudtrail" "main" {
   name = "main-${var.stage}"
 
