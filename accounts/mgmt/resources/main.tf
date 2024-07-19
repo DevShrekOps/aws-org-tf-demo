@@ -72,22 +72,6 @@ resource "aws_organizations_account" "main" {
   }
 }
 
-# Enable the security account to create an org CloudTrail. There's probably not much
-# benefit (if any) to delegating creation to the security account (as opposed to the
-# management account creating it) unless the security & management accounts are managed
-# by separate teams, but I'm doing it anyway as a general best practice.
-resource "aws_organizations_delegated_administrator" "cloudtrail_sec" {
-  service_principal = "cloudtrail.amazonaws.com"
-  account_id        = aws_organizations_account.main["sec"].id
-}
-
-# Normally this role is created automatically when creating an org CloudTrail via the
-# AWS console, but since I'm creating the trail and all of its prerequisites via
-# Terraform, this role must be explicitly created too.
-resource "aws_iam_service_linked_role" "cloudtrail" {
-  aws_service_name = "cloudtrail.amazonaws.com"
-}
-
 ## -------------------------------------------------------------------------------------
 ## IAM IDENTITY CENTER (SSO)
 ## -------------------------------------------------------------------------------------
