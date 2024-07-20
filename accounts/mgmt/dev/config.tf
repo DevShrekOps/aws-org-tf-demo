@@ -32,11 +32,6 @@ provider "aws" {
 ## BACKEND
 ## -------------------------------------------------------------------------------------
 
-# Since the bucket, table, & role referenced below are all declared in this root module,
-# those resources had to be deployed before adding this backend config. That means the
-# state for those resources was temporarily stored in a local `terraform.tfstate` file,
-# but after adding this backend config and re-initializing Terraform, the local state
-# was migrated to the bucket.
 terraform {
   backend "s3" {
     bucket         = "devshrekops-demo-tf-state-dev"
@@ -151,6 +146,57 @@ removed {
 }
 removed {
   from = module.mgmt_resources.aws_iam_service_linked_role.cloudtrail
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+# Removed when refactoring Terraform state backend into a standalone capability.
+removed {
+  from = module.mgmt_resources.aws_dynamodb_table.tf_state_locks
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.aws_iam_role.tf_state_manager
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.aws_s3_bucket_versioning.tf_state
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket.main
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_ownership_controls.main
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_policy.main
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_public_access_block.main
 
   lifecycle {
     destroy = false
