@@ -373,3 +373,13 @@ provider "aws" {
     role_arn = "arn:aws:iam::891377308296:role/tf-deployer-dev"
   }
 }
+
+## -------------------------------------------------------------------------------------
+## IMPORTS
+## -------------------------------------------------------------------------------------
+
+# Import service-linked role that was created automatically during development
+import {
+  to = module.guardduty_resources.aws_iam_service_linked_role.main
+  id = "arn:aws:iam::590183735431:role/aws-service-role/guardduty.amazonaws.com/AWSServiceRoleForAmazonGuardDuty"
+}

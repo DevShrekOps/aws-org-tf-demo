@@ -1,4 +1,17 @@
 ## -------------------------------------------------------------------------------------
+## SERVICE-LINKED ROLE
+## -------------------------------------------------------------------------------------
+
+# In member accounts, this role is created automatically as part of auto enablement in
+# the org GuardDuty config in the security account, but the role isn't automatically
+# created in the mgmt account, so explicitly create it here.
+resource "aws_iam_service_linked_role" "main" {
+  provider = aws.mgmt_us_east_1
+
+  aws_service_name = "guardduty.amazonaws.com"
+}
+
+## -------------------------------------------------------------------------------------
 ## MODULES
 ## -------------------------------------------------------------------------------------
 
