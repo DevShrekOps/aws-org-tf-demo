@@ -4,7 +4,9 @@ Demo multi-account AWS Organization created mostly with Terraform.
 
 ## AWS Accounts
 
-Each AWS account in this demo is represented by its own Terraform root module in the **accounts/\<account-key>/\<stage>/** directory. For example, the root module for the dev management account is located in **accounts/mgmt/dev/**.
+The **account-keys** file in this directory lists the keys of all AWS accounts in this demo. The list is stored in a separate file outside Terraform configs (as opposed to being a declared as an input variable or local value within configs) because it's used by multiple configs and should be kept in sync across them.
+
+Each AWS account is represented by its own Terraform root module in the **accounts/\<account-key>/\<stage>/** directory. For example, the root module for the dev management account is located in **accounts/mgmt/dev/**.
 
 Each account key has its own **resources** child module in the **accounts/\<account-key>/resources/** directory that declares all resources specific to the account key. For example, the **resources** child module for management accounts is located in **accounts/mgmt/resources/** and it declares all the resources specific to management accounts.
 
