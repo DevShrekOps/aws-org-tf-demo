@@ -33,13 +33,9 @@ resource "aws_organizations_organization" "main" {
 
 locals {
   # Keys of accounts to create in the org. An account's key is included in its name and
-  # email. If this list becomes inconveniently long, then it probably makes sense to
-  # move it to its own file, but for now I'd rather have this file be longer than there
-  # be more files in the directory.
-  account_keys = [
-    "mgmt", # management account
-    "sec",  # security account
-  ]
+  # email. The list is ingested from a separate file because it's used by more than one
+  # Terraform config.
+  account_keys = compact(split("\n", file("../../../account-keys")))
 }
 
 resource "aws_organizations_account" "main" {
