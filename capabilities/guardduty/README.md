@@ -11,4 +11,4 @@ Terraform modules for registering each stage's security account as a delegated G
 
 ## External Dependencies
 
-These modules can't be applied until after trusted access is enabled between Organizations and both GuardDuty & GuardDuty's Malware Protection in the management account, which are currently configured in **mgmt-resources**.
+These modules can't be applied until after trusted access is enabled between Organizations and both GuardDuty & GuardDuty's Malware Protection in the management account, which are configured in **org-resources**.

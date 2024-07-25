@@ -4,4 +4,4 @@ Terraform child module that declares all CloudTrail resources that should only b
 
 ## External Dependencies
 
-This module can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is currently configured in **mgmt-resources**.
+This module can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is configured in **org-resources**.
