@@ -1,6 +1,6 @@
 # guardduty-dev
 
-Terraform root module for registering the dev security account as a delegated GuardDuty administrator and automatically enabling GuardDuty in all enabled regions of all current & future AWS accounts in the dev org. Calls the **guardduty-resources** child module with providers & arguments specific to the dev org.
+Terraform root module for registering the dev security account as a delegated GuardDuty administrator in each enabled region of the dev management account, and configuring GuardDuty in each enabled region of the dev security account to automatically enable GuardDuty in all enabled regions of all current & future AWS accounts in the dev org. Calls the **guardduty-resources** child module with dev-specific providers & arguments.
 
 ## External Dependencies
 

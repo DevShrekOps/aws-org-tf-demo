@@ -1,6 +1,6 @@
 # guardduty-resources
 
-Terraform child module that declares all GuardDuty resources that should only be created once per stage, and calls the **guardduty-resources-regional** child module for each enabled region. Called by the **guardduty-dev** and **guardduty-prod** root modules.
+Terraform child module that declares all GuardDuty resources that should only be created in us-east-1 of each stage's management & security accounts, and calls the **guardduty-resources-regional** child module for each enabled region. Called by the **guardduty-\<stage\>** root modules.
 
 ## External Dependencies
 

@@ -1,12 +1,11 @@
 # cloudtrail
 
-Terraform modules for registering each stage's security account as a delegated CloudTrail administrator and creating an organization trail.
+Terraform modules for registering each stage's security account as a delegated CloudTrail administrator in us-east-1 of each stage's management account, and creating an organization trail in us-east-1 of each stage's security account.
 
 ## Directories
 
-- **prod:** Root module that calls the **cloudtrail-resources** child module with providers & arguments that are specific to the prod org.
-- **dev:** Root module that calls the **cloudtrail-resources** child module with providers & arguments specific to the dev org.
-- **resources:** Child module that declares all CloudTrail resources that should only be created once per stage.
+- **\<stage\>:** Root module that calls the **cloudtrail-resources** child module with stage-specific providers & arguments.
+- **resources:** Child module that declares all CloudTrail resources that should be created in us-east-1 of each stage's management & security accounts.
 
 ## External Dependencies
 

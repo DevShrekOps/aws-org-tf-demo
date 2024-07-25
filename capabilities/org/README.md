@@ -4,5 +4,5 @@ Terraform modules for creating an organization in us-east-1 of each stage's mana
 
 ## Directories
 
-- **<stage>:** Root module that calls the **org-resources** child module with stage-specific provider & arguments.
+- **\<stage\>:** Root module that calls the **org-resources** child module with stage-specific provider & arguments.
 - **resources:** Child module that declares all org resources that should be created in us-east-1 of each stage's management account.

@@ -16,10 +16,11 @@ resource "aws_iam_service_linked_role" "main" {
 ## -------------------------------------------------------------------------------------
 
 # Child module that declares all GuardDuty resources that should be created in each
-# enabled region. Unfortunately, as of Terraform v1.7, it's not possible to use
-# `for_each` to call the same module multiple times with different providers. Thus, a
-# separate module block is declared for each region, resulting in a lot of duplication.
-# This problem might be alleviated in the future with the release of Terraform Stacks.
+# enabled region of each stage's management & security accounts. Unfortunately, as of
+# Terraform v1.7, it's not possible to use `for_each` to call the same module multiple
+# times with different providers. Thus, a separate module block is declared for each
+# region, resulting in a lot of duplication. This problem might be alleviated in the
+# future with the release of Terraform Stacks.
 
 module "ap_northeast_1" {
   source = "./regional"
