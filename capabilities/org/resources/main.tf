@@ -49,6 +49,15 @@ resource "aws_organizations_account" "main" {
 
   role_name = "tf-deployer-${var.stage}"
 
+  tags = {
+    # Add a tag with the account key. The original goal was to make it easier for other
+    # modules that fetch accounts via a data source to reference accounts by their key,
+    # but that didn't work out due to an account's tags not being included as an
+    # attribute in the data source. Keeping the tag anyway since it could be useful in
+    # the future.
+    account-key = each.key
+  }
+
   lifecycle {
     # Configure Terraform to ignore changes to the iam_user_access_to_billing attribute
     # so that Terraform doesn't plan to recreate management accounts when imported. Also
