@@ -3,35 +3,9 @@ output "full_admin_sso_perm_set_arn" {
   value       = aws_ssoadmin_permission_set.full_admin.arn
 }
 
-output "org_accounts" {
-  description = "Metadata of all accounts in the organization."
-  # Don't use aws_organizations_organization.main.accounts for this because it doesn't
-  # update when a new account is created until the next `terraform apply` due to lack
-  # of a dependency on aws_organizations_account.main. It feels backward to add such a
-  # dependency.
-  value = {
-    for account_key, account in aws_organizations_account.main : account_key => {
-      arn   = account.arn,
-      email = account.email,
-      id    = account.id,
-      name  = account.name,
-    }
-  }
-}
-
 output "org_admins_sso_group_id" {
   description = "ID of the org-admins-<stage> SSO Group."
   value       = aws_identitystore_group.org_admins.group_id
-}
-
-output "org_id" {
-  description = "Organization ID."
-  value       = aws_organizations_organization.main.id
-}
-
-output "org_roots" {
-  description = "Organization roots."
-  value       = aws_organizations_organization.main.roots
 }
 
 output "sso_instance_arn" {

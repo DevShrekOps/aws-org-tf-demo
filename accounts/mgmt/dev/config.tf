@@ -48,13 +48,6 @@ terraform {
 ## IMPORTS, MOVED, & REMOVED
 ## -------------------------------------------------------------------------------------
 
-# Import the org that was manually created in this account when IAM Identity Center was
-# enabled.
-import {
-  to = module.mgmt_resources.aws_organizations_organization.main
-  id = "o-pca28idqmq"
-}
-
 # Import the org-admins-dev SSO group that was manually created in this account.
 import {
   to = module.mgmt_resources.aws_identitystore_group.org_admins
@@ -113,12 +106,6 @@ import {
 import {
   to = module.mgmt_resources.aws_identitystore_group_membership.org_admins["donkey"]
   id = "d-9067f854db/5488c4d8-7011-70dc-1413-cbcf970d2cdd"
-}
-
-# Import the management account that was manually created via the AWS website.
-import {
-  to = module.mgmt_resources.aws_organizations_account.main["mgmt"]
-  id = "533266992459"
 }
 
 # Moved when refactoring to use the new baseline-s3-bucket module to create the S3
@@ -197,6 +184,22 @@ removed {
 }
 removed {
   from = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_public_access_block.main
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+# Removed when refactoring the org into a standalone capability
+removed {
+  from = module.mgmt_resources.aws_organizations_organization.main
+
+  lifecycle {
+    destroy = false
+  }
+}
+removed {
+  from = module.mgmt_resources.aws_organizations_account.main
 
   lifecycle {
     destroy = false

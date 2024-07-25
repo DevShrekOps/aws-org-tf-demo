@@ -4,4 +4,4 @@ Terraform root module for registering the dev security account as a delegated Cl
 
 ## External Dependencies
 
-This module can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is currently configured in **mgmt-resources**.
+This module can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is configured in **org-resources**.

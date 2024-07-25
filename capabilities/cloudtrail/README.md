@@ -10,4 +10,4 @@ Terraform modules for registering each stage's security account as a delegated C
 
 ## External Dependencies
 
-These modules can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is currently configured in **mgmt-resources**.
+These modules can't be applied until after trusted access is enabled between Organizations and CloudTrail in the management account, which is configured in **org-resources**.
