@@ -2,8 +2,9 @@
 ## MODULES
 ## -------------------------------------------------------------------------------------
 
-# Child module that declares all GuardDuty resources that should only be created once
-# per stage, and calls the **regional** child module for each enabled region.
+# Child module that declares all GuardDuty resources that should only be created in
+# us-east-1 of each stage's management & security accounts, and calls the
+# guardduty-resources-regional child module for each enabled region.
 module "guardduty_resources" {
   source = "../resources"
 

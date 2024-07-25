@@ -2,8 +2,8 @@
 ## MODULES
 ## -------------------------------------------------------------------------------------
 
-# Child module that declares all CloudTrail resources that should only be created once
-# per stage.
+# Child module that declares all CloudTrail resources that should be created in
+# us-east-1 of each stage's management & security accounts.
 module "cloudtrail_resources" {
   source = "../resources"
 

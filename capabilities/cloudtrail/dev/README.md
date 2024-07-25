@@ -1,6 +1,6 @@
 # cloudtrail-dev
 
-Terraform root module for registering the dev security account as a delegated CloudTrail administrator and creating an organization trail. Calls the **cloudtrail-resources** child module with providers & arguments specific to the dev org.
+Terraform root module for registering the dev security account as a delegated CloudTrail administrator in us-east-1 of the dev management account, and creating an organization trail in us-east-1 of the dev security account. Calls the **cloudtrail-resources** child module with dev-specific providers & arguments.
 
 ## External Dependencies
 

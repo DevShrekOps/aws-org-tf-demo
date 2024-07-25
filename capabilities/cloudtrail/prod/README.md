@@ -1,6 +1,6 @@
 # cloudtrail-prod
 
-Terraform root module for registering the prod security account as a delegated CloudTrail administrator and creating an organization trail. Calls the **cloudtrail-resources** child module with providers & arguments specific to the prod org.
+Terraform root module for registering the prod security account as a delegated CloudTrail administrator in us-east-1 of the prod management account, and creating an organization trail in us-east-1 of the prod security account. Calls the **cloudtrail-resources** child module with prod-specific providers & arguments.
 
 ## External Dependencies
 

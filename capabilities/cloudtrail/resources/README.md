@@ -1,6 +1,6 @@
 # cloudtrail-resources
 
-Terraform child module that declares all CloudTrail resources that should only be created once per stage. Called by the **cloudtrail-dev** and **cloudtrail-prod** root modules.
+Terraform child module that declares all CloudTrail resources that should be created in us-east-1 of each stage's management & security accounts. Called by the **cloudtrail-\<stage\>** root modules.
 
 ## External Dependencies
 
