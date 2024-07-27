@@ -45,23 +45,8 @@ terraform {
 }
 
 ## -------------------------------------------------------------------------------------
-## IMPORTS, MOVED, & REMOVED
+## REMOVED
 ## -------------------------------------------------------------------------------------
-
-# Moved when refactoring to use the new baseline-s3-bucket module to create the S3
-# bucket for storing Terraform state.
-moved {
-  from = module.mgmt_resources.aws_s3_bucket.tf_state
-  to   = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket.main
-}
-moved {
-  from = module.mgmt_resources.aws_s3_bucket_ownership_controls.tf_state
-  to   = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_ownership_controls.main
-}
-moved {
-  from = module.mgmt_resources.aws_s3_bucket_public_access_block.tf_state
-  to   = module.mgmt_resources.module.tf_state_baseline_s3_bucket.aws_s3_bucket_public_access_block.main
-}
 
 # Removed when refactoring CloudTrail into a standalone capability.
 removed {
