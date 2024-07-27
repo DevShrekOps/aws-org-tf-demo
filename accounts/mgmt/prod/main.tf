@@ -1,27 +1,4 @@
 ## -------------------------------------------------------------------------------------
-## LOCALS
-## -------------------------------------------------------------------------------------
-
-# If this locals block becomes inconveniently long, then it probably makes sense to
-# split it up into one or more separate files, but for now I'd rather have this file be
-# longer than there be more files in the directory.
-locals {
-  sso_users = [
-    {
-      username     = "donkey"
-      display_name = "Donkey"
-      email        = "devshrekops+donkey@gmail.com"
-      first_name   = "Donkey"
-      last_name    = "Unknown"
-    },
-  ]
-
-  sso_org_admins = [
-    "donkey",
-  ]
-}
-
-## -------------------------------------------------------------------------------------
 ## MODULES
 ## -------------------------------------------------------------------------------------
 
@@ -38,7 +15,5 @@ module "account_baseline" {
 module "mgmt_resources" {
   source = "../resources"
 
-  stage          = "prod"
-  sso_users      = local.sso_users
-  sso_org_admins = local.sso_org_admins
+  stage = "prod"
 }
