@@ -1,6 +1,6 @@
 # org
 
-Terraform modules for creating an organization in us-east-1 of each stage's management account. Includes an account factory for creating new member accounts in the org.
+Terraform configs for creating an organization in us-east-1 of each stage's management account. Includes an account factory for creating new member accounts in the org.
 
 ## Directories
 
