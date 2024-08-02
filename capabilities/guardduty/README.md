@@ -1,6 +1,6 @@
 # guardduty
 
-Terraform modules for registering each stage's security account as a delegated GuardDuty administrator in each enabled region of each stage's management account, and configuring GuardDuty in each enabled region of each stage's security account to automatically enable GuardDuty in all enabled regions of all current & future AWS accounts in each stage's org.
+Terraform configs for registering each stage's security account as a delegated GuardDuty administrator in each enabled region of each stage's management account, and configuring GuardDuty in each enabled region of each stage's security account to automatically enable GuardDuty in all enabled regions of all current & future AWS accounts in each stage's org.
 
 ## Directories
 

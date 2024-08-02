@@ -1,6 +1,6 @@
 # tf-state-backend
 
-Terraform modules for creating an S3 backend in us-east-1 of each stage's management account to store state for all the stage's Terraform configs.
+Terraform configs for creating an S3 backend in us-east-1 of each stage's management account to store state for all the stage's Terraform configs.
 
 ## Directories
 

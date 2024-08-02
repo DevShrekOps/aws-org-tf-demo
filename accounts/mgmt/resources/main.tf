@@ -1,1 +1,1 @@
-# Placeholder
+# No resources yet

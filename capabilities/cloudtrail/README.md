@@ -1,6 +1,6 @@
 # cloudtrail
 
-Terraform modules for registering each stage's security account as a delegated CloudTrail administrator in us-east-1 of each stage's management account, and creating an organization trail in us-east-1 of each stage's security account.
+Terraform configs for registering each stage's security account as a delegated CloudTrail administrator in us-east-1 of each stage's management account, and creating an organization trail in us-east-1 of each stage's security account.
 
 ## Directories
 

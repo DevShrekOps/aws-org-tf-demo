@@ -1,6 +1,6 @@
 # sso
 
-Terraform modules for creating an IAM Identity Center (SSO) instance in us-east-1 of each stage's management account, along with SSO users, groups, & permission sets.
+Terraform configs for creating an IAM Identity Center (SSO) instance in us-east-1 of each stage's management account, along with SSO users, groups, & permission sets.
 
 ## Directories
 
