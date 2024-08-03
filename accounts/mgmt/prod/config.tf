@@ -45,7 +45,7 @@ terraform {
 }
 
 ## -------------------------------------------------------------------------------------
-## REMOVED
+## IMPORTS & REMOVED
 ## -------------------------------------------------------------------------------------
 
 # Removed when refactoring CloudTrail into a standalone capability.
@@ -173,4 +173,15 @@ removed {
   lifecycle {
     destroy = false
   }
+}
+
+# Import cost anomaly detection resources that were automatically created when
+# navigating to the billing dashboard in the AWS console for the first time.
+import {
+  to = module.mgmt_resources.aws_ce_anomaly_monitor.main
+  id = "arn:aws:ce::339712815005:anomalymonitor/a867bd1b-3110-4c5b-a7e0-479d690e6a8c"
+}
+import {
+  to = module.mgmt_resources.aws_ce_anomaly_subscription.main
+  id = "arn:aws:ce::339712815005:anomalysubscription/760fdb4a-9b87-418b-939c-ae4df60de48c"
 }
