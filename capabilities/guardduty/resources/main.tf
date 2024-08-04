@@ -1,4 +1,12 @@
 ## -------------------------------------------------------------------------------------
+## NOTICE
+## -------------------------------------------------------------------------------------
+
+# Resources declared directly in this file will only be created in the specified region
+# of each stage's management or security account (depending on provider), not any other
+# account nor region.
+
+## -------------------------------------------------------------------------------------
 ## SERVICE-LINKED ROLE
 ## -------------------------------------------------------------------------------------
 
@@ -12,7 +20,7 @@ resource "aws_iam_service_linked_role" "main" {
 }
 
 ## -------------------------------------------------------------------------------------
-## MODULES
+## REGIONAL MODULE
 ## -------------------------------------------------------------------------------------
 
 # Child module that declares all GuardDuty resources that should be created in each

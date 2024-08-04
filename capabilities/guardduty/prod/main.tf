@@ -1,5 +1,13 @@
 ## -------------------------------------------------------------------------------------
-## MODULES
+## NOTICE
+## -------------------------------------------------------------------------------------
+
+# Resources declared directly in this file will only be created in the specified region
+# of the prod management or security account (depending on provider), not any other
+# account, region, nor stage.
+
+## -------------------------------------------------------------------------------------
+## GUARDDUTY RESOURCES MODULE
 ## -------------------------------------------------------------------------------------
 
 # Child module that declares all GuardDuty resources that should only be created in

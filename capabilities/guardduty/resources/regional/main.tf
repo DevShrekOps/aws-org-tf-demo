@@ -1,4 +1,12 @@
 ## -------------------------------------------------------------------------------------
+## NOTICE
+## -------------------------------------------------------------------------------------
+
+# Resources declared directly in this file will be created in each enabled region of
+# each stage's management or security account (depending on provider), but not any other
+# account.
+
+## -------------------------------------------------------------------------------------
 ## COMMON DATA SOURCES & LOCAL VALUES
 ## -------------------------------------------------------------------------------------
 
