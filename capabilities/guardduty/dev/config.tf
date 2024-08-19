@@ -34,6 +34,12 @@ terraform {
 ## PROVIDERS
 ## -------------------------------------------------------------------------------------
 
+# Declare AWS providers for each enabled region of the dev management & security
+# accounts. Unfortunately, as of Terraform v1.7, it's not possible to use `for_each` in
+# a provider block. Thus, a separate provider block is declared for each region of each
+# account, resulting in a lot of duplication. This problem might be alleviated in the
+# future with the release of Terraform Stacks.
+
 # ap-northeast-1
 
 provider "aws" {
