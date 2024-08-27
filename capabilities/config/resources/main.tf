@@ -59,6 +59,11 @@ module "baseline_s3_bucket" {
   }
 
   stage = var.stage
+
+  # If the scope of this bucket is ever changed (or if any other change is ever made
+  # that results in this bucket being renamed), then the hardcoded reference to this
+  # bucket name in the Config delivery channel resource declaration in the
+  # account-baseline-regional module must be updated accordingly.
   scope = "config-logs"
 
   # The bucket policy will consist of a policy document that's the same across all
