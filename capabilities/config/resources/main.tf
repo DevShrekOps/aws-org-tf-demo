@@ -40,6 +40,75 @@ resource "aws_organizations_delegated_administrator" "main" {
 }
 
 ## -------------------------------------------------------------------------------------
+## CONFIG MULTI-ACCOUNT, MULTI-REGION DATA AGGREGATOR
+## -------------------------------------------------------------------------------------
+
+resource "aws_config_configuration_aggregator" "main" {
+  provider = aws.sec_us_east_1
+
+  name = "main-${var.stage}"
+
+  organization_aggregation_source {
+    all_regions = true
+    role_arn    = aws_iam_role.config_org_reader.arn
+  }
+
+  depends_on = [
+    # The Config aggregator can't be created until the security account has been enabled
+    # as a delegated Config admin, but Terraform can't infer that dependency.
+    aws_organizations_delegated_administrator.main,
+
+    # The Config aggregator can't be created until the Config org reader role has the
+    # necessary permissions, but Terraform can't infer the dependency on the IAM policy
+    # attachment resource.
+    aws_iam_role_policy_attachment.config_org_reader_aws_config_role_for_orgs,
+  ]
+}
+
+## -------------------------------------------------------------------------------------
+## CONFIG ORG READER ROLE
+## -------------------------------------------------------------------------------------
+
+# This role is used by the Config data aggregator to fetch details about other AWS
+# accounts in the org to aggregate Config data from.
+resource "aws_iam_role" "config_org_reader" {
+  provider = aws.sec_us_east_1
+
+  name = "config-org-reader-${var.stage}"
+
+  assume_role_policy = data.aws_iam_policy_document.config_org_reader_assume_role.json
+}
+
+data "aws_iam_policy_document" "config_org_reader_assume_role" {
+  provider = aws.sec_us_east_1
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["config.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "config_org_reader_aws_config_role_for_orgs" {
+  provider = aws.sec_us_east_1
+
+  role       = aws_iam_role.config_org_reader.name
+  policy_arn = data.aws_iam_policy.aws_config_role_for_orgs.arn
+}
+
+data "aws_iam_policy" "aws_config_role_for_orgs" {
+  provider = aws.sec_us_east_1
+
+  name        = "AWSConfigRoleForOrganizations"
+  path_prefix = "/service-role/"
+}
+
+## -------------------------------------------------------------------------------------
 ## S3 BUCKET FOR CONFIG LOGS
 ## -------------------------------------------------------------------------------------
 
