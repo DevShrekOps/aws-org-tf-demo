@@ -23,3 +23,11 @@ output "org_roots" {
   description = "Roots of the org."
   value       = aws_organizations_organization.main.roots
 }
+
+output "ou_ids" {
+  description = "IDs of the OUs in the org."
+  value = {
+    "active" : aws_organizations_organizational_unit.active.id
+    "closed" : aws_organizations_organizational_unit.closed.id
+  }
+}

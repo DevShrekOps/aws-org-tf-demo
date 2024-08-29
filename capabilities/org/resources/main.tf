@@ -35,6 +35,20 @@ resource "aws_organizations_organization" "main" {
 }
 
 ## -------------------------------------------------------------------------------------
+## ORGANIZATIONAL UNITS (OUs)
+## -------------------------------------------------------------------------------------
+
+resource "aws_organizations_organizational_unit" "active" {
+  name      = "active-${var.stage}"
+  parent_id = aws_organizations_organization.main.roots[0].id
+}
+
+resource "aws_organizations_organizational_unit" "closed" {
+  name      = "closed-${var.stage}"
+  parent_id = aws_organizations_organization.main.roots[0].id
+}
+
+## -------------------------------------------------------------------------------------
 ## ACCOUNT FACTORY
 ## -------------------------------------------------------------------------------------
 
@@ -47,10 +61,7 @@ resource "aws_organizations_account" "main" {
   name  = "demo-${each.key}-${var.stage}"
   email = "devshrekops+demo-${each.key}-${var.stage}@gmail.com"
 
-  # An OU structure will be created in the future, but for now all accounts will go into
-  # the root of the org. This is the default behavior, but explicitly setting it anyway
-  # so that Terraform will perform drift detection on any manual changes to parent ID.
-  parent_id = aws_organizations_organization.main.roots[0].id
+  parent_id = aws_organizations_organizational_unit.active.id
 
   close_on_deletion          = true
   iam_user_access_to_billing = "ALLOW"
