@@ -31,3 +31,10 @@ output "ou_ids" {
     "closed" : aws_organizations_organizational_unit.closed.id
   }
 }
+
+output "scp_ids" {
+  description = "IDs of the SCPs in the org."
+  value = {
+    "deny_all" : aws_organizations_policy.deny_all.id
+  }
+}

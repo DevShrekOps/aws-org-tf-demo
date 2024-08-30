@@ -32,20 +32,10 @@ resource "aws_organizations_organization" "main" {
     "malware-protection.guardduty.amazonaws.com",
     "sso.amazonaws.com", # IAM Identity Center
   ]
-}
 
-## -------------------------------------------------------------------------------------
-## ORGANIZATIONAL UNITS (OUs)
-## -------------------------------------------------------------------------------------
-
-resource "aws_organizations_organizational_unit" "active" {
-  name      = "active-${var.stage}"
-  parent_id = aws_organizations_organization.main.roots[0].id
-}
-
-resource "aws_organizations_organizational_unit" "closed" {
-  name      = "closed-${var.stage}"
-  parent_id = aws_organizations_organization.main.roots[0].id
+  enabled_policy_types = [
+    "SERVICE_CONTROL_POLICY",
+  ]
 }
 
 ## -------------------------------------------------------------------------------------
@@ -85,5 +75,48 @@ resource "aws_organizations_account" "main" {
     # Terraform cannot perform drift detection on its value and will always show a
     # difference for a configured value after import unless ignore_changes is used."
     ignore_changes = [iam_user_access_to_billing, role_name]
+  }
+}
+
+## -------------------------------------------------------------------------------------
+## ACTIVE OU
+## -------------------------------------------------------------------------------------
+
+resource "aws_organizations_organizational_unit" "active" {
+  name      = "active-${var.stage}"
+  parent_id = aws_organizations_organization.main.roots[0].id
+}
+
+## -------------------------------------------------------------------------------------
+## CLOSED OU
+## -------------------------------------------------------------------------------------
+
+resource "aws_organizations_organizational_unit" "closed" {
+  name      = "closed-${var.stage}"
+  parent_id = aws_organizations_organization.main.roots[0].id
+}
+
+resource "aws_organizations_policy_attachment" "closed_deny_all" {
+  target_id = aws_organizations_organizational_unit.closed.id
+  policy_id = aws_organizations_policy.deny_all.id
+}
+
+## -------------------------------------------------------------------------------------
+## DENY-ALL SCP
+## -------------------------------------------------------------------------------------
+
+resource "aws_organizations_policy" "deny_all" {
+  name        = "deny-all-${var.stage}"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "Deny all actions on all resources by all principals."
+  content     = data.aws_iam_policy_document.deny_all.json
+}
+
+data "aws_iam_policy_document" "deny_all" {
+  statement {
+    sid       = "DenyAllActionsOnAllResources"
+    effect    = "Deny"
+    actions   = ["*"]
+    resources = ["*"]
   }
 }
