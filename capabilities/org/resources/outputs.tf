@@ -19,9 +19,9 @@ output "org_id" {
   value       = aws_organizations_organization.main.id
 }
 
-output "org_roots" {
-  description = "Roots of the org."
-  value       = aws_organizations_organization.main.roots
+output "org_root_id" {
+  description = "ID of the org's root."
+  value       = aws_organizations_organization.main.roots[0].id
 }
 
 output "ou_ids" {
