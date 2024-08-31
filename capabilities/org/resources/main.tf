@@ -87,6 +87,11 @@ resource "aws_organizations_organizational_unit" "active" {
   parent_id = aws_organizations_organization.main.roots[0].id
 }
 
+resource "aws_organizations_policy_attachment" "active_baseline_guardrails" {
+  target_id = aws_organizations_organizational_unit.active.id
+  policy_id = aws_organizations_policy.baseline_guardrails.id
+}
+
 ## -------------------------------------------------------------------------------------
 ## CLOSED OU
 ## -------------------------------------------------------------------------------------
@@ -99,6 +104,45 @@ resource "aws_organizations_organizational_unit" "closed" {
 resource "aws_organizations_policy_attachment" "closed_deny_all" {
   target_id = aws_organizations_organizational_unit.closed.id
   policy_id = aws_organizations_policy.deny_all.id
+}
+
+## -------------------------------------------------------------------------------------
+## BASELINE-GUARDRAILS SCP
+## -------------------------------------------------------------------------------------
+
+resource "aws_organizations_policy" "baseline_guardrails" {
+  name        = "baseline-guardrails-${var.stage}"
+  type        = "SERVICE_CONTROL_POLICY"
+  description = "Baseline security controls applied to all AWS accounts."
+  content     = data.aws_iam_policy_document.baseline_guardrails.json
+}
+
+data "aws_iam_policy_document" "baseline_guardrails" {
+  statement {
+    sid       = "DenyActionsInDisallowedRegions"
+    effect    = "Deny"
+    actions   = ["*"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:RequestedRegion"
+      values = [
+        "us-east-1", # N. Virginia (includes global services)
+        "us-west-2", # Oregon
+      ]
+    }
+
+    # Exempt the Terraform deployer role from region restrictions, at least for now
+    # while there are still Terraform-managed resources deployed into all regions.
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalARN"
+      values = [
+        "arn:aws:iam::*:role/tf-deployer-${var.stage}"
+      ]
+    }
+  }
 }
 
 ## -------------------------------------------------------------------------------------

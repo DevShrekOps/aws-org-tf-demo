@@ -35,6 +35,7 @@ output "ou_ids" {
 output "scp_ids" {
   description = "IDs of the SCPs in the org."
   value = {
+    "baseline_guardrails" : aws_organizations_policy.baseline_guardrails.id
     "deny_all" : aws_organizations_policy.deny_all.id
   }
 }
