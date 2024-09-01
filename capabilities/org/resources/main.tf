@@ -132,16 +132,6 @@ data "aws_iam_policy_document" "baseline_guardrails" {
         "us-west-2", # Oregon
       ]
     }
-
-    # Exempt the Terraform deployer role from region restrictions, at least for now
-    # while there are still Terraform-managed resources deployed into all regions.
-    condition {
-      test     = "ArnNotLike"
-      variable = "aws:PrincipalARN"
-      values = [
-        "arn:aws:iam::*:role/tf-deployer-${var.stage}"
-      ]
-    }
   }
 }
 
