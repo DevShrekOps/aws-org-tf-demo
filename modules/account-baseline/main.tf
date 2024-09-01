@@ -36,12 +36,12 @@ resource "aws_s3_account_public_access_block" "main" {
 ## SERVICE-LINKED ROLE FOR CONFIG
 ## -------------------------------------------------------------------------------------
 
-# Used by the Config recorder that's created in each region via the regional module. I
-# would've preferred to declare it in the standalone config capability so that it'd be
-# declared side-by-side with other Config-related resources, but because it needs to be
-# created in each account, it's more practical to declare it here instead. Otherwise,
-# the config capability modules would have to be updated with new AWS providers each
-# time a new account was created in the org.
+# Used by the Config recorder that's created in each allowed region via the regional
+# module. I would've preferred to declare it in the standalone config capability so that
+# it'd be declared side-by-side with other Config-related resources, but because it
+# needs to be created in each account, it's more practical to declare it here instead.
+# Otherwise, the config capability modules would have to be updated with new AWS
+# providers each time a new account was created in the org.
 resource "aws_iam_service_linked_role" "config" {
   provider = aws.us_east_1
 
@@ -52,155 +52,12 @@ resource "aws_iam_service_linked_role" "config" {
 ## REGIONAL MODULE
 ## -------------------------------------------------------------------------------------
 
-# Child module that declares baseline resources that should be created in each enabled
+# Child module that declares baseline resources that should be created in each allowed
 # region of each account in each stage. Unfortunately, as of Terraform v1.7, it's not
 # possible to use `for_each` to call the same module multiple times with different
-# providers. Thus, a separate module block is declared for each region, resulting in a
-# lot of duplication. This problem might be alleviated in the future with the release of
-# Terraform Stacks.
-
-module "ap_northeast_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_northeast_1
-  }
-}
-
-module "ap_northeast_2" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_northeast_2
-  }
-}
-
-module "ap_northeast_3" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_northeast_3
-  }
-}
-
-module "ap_south_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_south_1
-  }
-}
-
-module "ap_southeast_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_southeast_1
-  }
-}
-
-module "ap_southeast_2" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ap_southeast_2
-  }
-}
-
-module "ca_central_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.ca_central_1
-  }
-}
-
-module "eu_central_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.eu_central_1
-  }
-}
-
-module "eu_north_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.eu_north_1
-  }
-}
-
-module "eu_west_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.eu_west_1
-  }
-}
-
-module "eu_west_2" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.eu_west_2
-  }
-}
-
-module "eu_west_3" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.eu_west_3
-  }
-}
-
-module "sa_east_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.sa_east_1
-  }
-}
+# providers. Thus, a separate module block is declared for each allowed region,
+# resulting in a lot of duplication. This problem might be alleviated in the future with
+# the release of Terraform Stacks.
 
 module "us_east_1" {
   source = "./regional"
@@ -210,28 +67,6 @@ module "us_east_1" {
 
   providers = {
     aws = aws.us_east_1
-  }
-}
-
-module "us_east_2" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.us_east_2
-  }
-}
-
-module "us_west_1" {
-  source = "./regional"
-
-  stage               = var.stage
-  config_svc_role_arn = aws_iam_service_linked_role.config.arn
-
-  providers = {
-    aws = aws.us_west_1
   }
 }
 

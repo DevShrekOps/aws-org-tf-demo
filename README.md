@@ -30,7 +30,7 @@ The root module for each capability's Terraform config is in the **capabilities/
 
 Resources that should only be created in us-east-1 of the relevant AWS account(s) for each stage are declared in the **\<capability-name\>-resources** child module in **capabilities/\<capability-name\>/resources/** which is called by the root module for the capability's Terraform config. For example, the **guardduty-resources** child module is called by the **guardduty-dev** and **guardduty-prod** root modules. This helps reduce duplication and lower the risk of drift between stages.
 
-Resources that should be created in each enabled region of the relevant AWS account(s) for each stage are declared in the **\<capability-name\>-resources-regional** child module in **capabilities/\<capability-name\>/resources/regional** which is called by its respective **\<capability-name\>-resources** child module. For example, the **guardduty-resources-regional** child module is called by the **guardduty-resources** child module, once for each enabled region.
+Resources that should be created in each allowed region of the relevant AWS account(s) for each stage are declared in the **\<capability-name\>-resources-regional** child module in **capabilities/\<capability-name\>/resources/regional** which is called by its respective **\<capability-name\>-resources** child module. For example, the **guardduty-resources-regional** child module is called by the **guardduty-resources** child module, once for each allowed region.
 
 In some cases, root & child modules in **capabilities/** might call other child modules in **modules/**.
 
@@ -39,6 +39,14 @@ In some cases, root & child modules in **capabilities/** might call other child 
 The **modules/** directory contains Terraform child modules that are called by multiple root and/or child modules for different accounts and/or capabilities (not just multiple root and/or child modules for different stages of a single account key or capability). For example, the **account-baseline** module declares a baseline set of resources that's created in every AWS account in this demo, and is thus called by the root module for each account's Terraform config in **accounts/**.
 
 In the future, it might make sense to store each module in its own repo and/or version each module individually. But for now storing all modules in the same repo without separate versioning is the simplest approach.
+
+## Regions
+
+The main region used in this demo is us-east-1. Resources that only need to be created once per org or once per account are created in the us-east-1 region. However, some modules are designed to support duplicating resources across multiple regions. Such resources are referred to as "regional resources" and are typically declared in a separate "regional" sub-module. For example, the **account-baseline** module declares resources that only need to be created once per account (e.g., an S3 Account Public Access Block), whereas the **account-baseline-regional** sub-module declares regional resources (e.g., a Config recorder).
+
+In a previous iteration of this demo, regional resources were created in each of the seventeen regions that are enabled by default. This was later scaled back such that regional resources are now only created in two regions: us-east-1 and us-west-2. These two regions are referred to as "allowed regions", since a Service Control Policy (SCP) was created to explicitly deny actions in all other regions.
+
+The two reasons this demo was scaled back to only create regional resources in us-east-1 and us-west-2 were to reduce costs (especially related to AWS Config) and duplication (e.g., due to Terraform requiring a separate provider to be declared per region per account). In a real org, an argument could be made that even with a SCP in place explicitly denying actions in disallowed regions, it might still make sense to create security-related resources (e.g., a GuardDuty detector) in each enabled region (not just each allowed region), both to make it quicker to securely expand into other regions if/when the business need arises, and because SCP-based region restrictions aren't perfect (e.g., they aren't applied to the management account).
 
 ## Manual Actions
 
@@ -84,7 +92,7 @@ In **config.tf** in each Terraform root module, there's a "PROVIDERS" section th
 
 In most cases, the AWS provider is configured to use the **tf-deployer-\<stage\>** role to deploy resources into the **us-east-1** region of a specific account. This prevents accidental deployment into the wrong account and/or region.
 
-However, sometimes a root module needs to create resources in multiple accounts and/or regions. In such cases, separate AWS providers are needed for each region of each account. Unfortunately, as of Terraform v1.7, it's not possible to use `for_each` to declare multiple providers with a single provider block. Thus, a separate provider block is declared for each region of each account, resulting in a lot of duplication. This problem might be alleviated in the future with the release of Terraform Stacks.
+However, sometimes a root module needs to create resources in multiple accounts and/or regions. In such cases, separate AWS providers are needed for each relevant region of each account. Unfortunately, as of Terraform v1.7, it's not possible to use `for_each` to declare multiple providers with a single provider block. Thus, a separate provider block is declared for each relevant region of each account, resulting in a lot of duplication. This problem might be alleviated in the future with the release of Terraform Stacks.
 
 It's up to the developer or pipeline that's performing the deployment to provide AWS credentials to Terraform with sufficient permissions to assume the deployment role in the specified account(s). As "the developer" for this demo, I'll configure the AWS CLI on my development system with two named profiles, one for the **donkey** SSO user in **mgmt-prod**, and the other for the **donkey** SSO user in **mgmt-dev**. These SSO users will have sufficient permissions to assume the deployment role in all accounts in the prod & dev orgs respectively. I'll set the **AWS_PROFILE** environment variable to the appropriate profile name before performing a deployment. If I forget to do so or if I set the environment variable to the wrong profile name, then the deployment will fail (which is much better than deploying resources into the wrong account).
 
