@@ -2,7 +2,7 @@
 ## NOTICE
 ## -------------------------------------------------------------------------------------
 
-# Resources declared directly in this file will be created in each enabled region of
+# Resources declared directly in this file will be created in each allowed region of
 # each stage's management or security account (depending on provider), but not any other
 # account.
 

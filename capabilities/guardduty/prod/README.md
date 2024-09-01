@@ -1,6 +1,6 @@
 # guardduty-prod
 
-Terraform root module for registering the prod security account as a delegated GuardDuty administrator in each enabled region of the prod management account, and configuring GuardDuty in each enabled region of the prod security account to automatically enable GuardDuty in all enabled regions of all current & future AWS accounts in the prod org. Calls the **guardduty-resources** child module with prod-specific providers & arguments.
+Terraform root module for registering the prod security account as a delegated GuardDuty administrator in each allowed region of the prod management account, and configuring GuardDuty in each allowed region of the prod security account to automatically enable GuardDuty in all allowed regions of all current & future AWS accounts in the prod org. Calls the **guardduty-resources** child module with prod-specific providers & arguments.
 
 ## External Dependencies
 
