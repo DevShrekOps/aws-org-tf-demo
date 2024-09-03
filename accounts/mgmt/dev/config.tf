@@ -35,12 +35,24 @@ terraform {
 ## PROVIDERS
 ## -------------------------------------------------------------------------------------
 
+locals {
+  default_tags = {
+    "devshrekops:demo:stage"          = "dev"
+    "devshrekops:demo:tf-config-repo" = "aws-org-tf-demo"
+    "devshrekops:demo:tf-config-path" = "accounts/mgmt/dev"
+  }
+}
+
 provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 
   assume_role {
     role_arn = "arn:aws:iam::533266992459:role/tf-deployer-dev"
+  }
+
+  default_tags {
+    tags = local.default_tags
   }
 }
 
@@ -50,6 +62,10 @@ provider "aws" {
 
   assume_role {
     role_arn = "arn:aws:iam::533266992459:role/tf-deployer-dev"
+  }
+
+  default_tags {
+    tags = local.default_tags
   }
 }
 
