@@ -46,6 +46,14 @@ provider "aws" {
   assume_role {
     role_arn = "arn:aws:iam::533266992459:role/tf-deployer-dev" # mgmt-dev
   }
+
+  default_tags {
+    tags = {
+      "devshrekops:demo:stage"          = "dev"
+      "devshrekops:demo:tf-config-repo" = "aws-org-tf-demo"
+      "devshrekops:demo:tf-config-path" = "capabilities/tf-state-backend/dev"
+    }
+  }
 }
 
 ## -------------------------------------------------------------------------------------
