@@ -133,6 +133,32 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       ]
     }
   }
+
+  # Only allow the Terraform deployer role to create, modify, & delete tags that begin
+  # with "devshrekops:demo:". These tags are reserved for use by the Terraform configs
+  # in this repo.
+  statement {
+    sid       = "ProtectTerraformTags"
+    effect    = "Deny"
+    actions   = ["*"]
+    resources = ["*"]
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:TagKeys"
+      values = [
+        "devshrekops:demo:*",
+      ]
+    }
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalARN"
+      values = [
+        "arn:aws:iam::*:role/tf-deployer-${var.stage}",
+      ]
+    }
+  }
 }
 
 ## -------------------------------------------------------------------------------------
