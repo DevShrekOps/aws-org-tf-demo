@@ -159,6 +159,31 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       ]
     }
   }
+
+  # Only allow the Terraform deployer role to perform some write actions in some
+  # services. This statement is focused on actions that are simple to deny, without
+  # needing to narrow the policy statement down by resource ARN nor condition.
+  statement {
+    sid    = "SimpleGuardrails"
+    effect = "Deny"
+    actions = [
+      # Prevent out-of-band changes to AWS Config resources that are created & managed
+      # via Terraform configs in this repo (or are likely to be in the future).
+      "config:Delete*",
+      "config:Put*",
+      "config:Tag*",
+      "config:Untag*",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalARN"
+      values = [
+        "arn:aws:iam::*:role/tf-deployer-${var.stage}",
+      ]
+    }
+  }
 }
 
 ## -------------------------------------------------------------------------------------
