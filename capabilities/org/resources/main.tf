@@ -172,6 +172,19 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       "config:Put*",
       "config:Tag*",
       "config:Untag*",
+      "guardduty:Accept*",
+      "guardduty:Create*",
+      "guardduty:Decline*",
+      "guardduty:Delete*",
+      "guardduty:Disable*",
+      "guardduty:Disassociate*",
+      "guardduty:Enable*",
+      "guardduty:Invite*",
+      "guardduty:Start*",
+      "guardduty:Stop*",
+      "guardduty:Tag*",
+      "guardduty:Untag*",
+      "guardduty:Update*",
     ]
     resources = ["*"]
 
