@@ -134,9 +134,9 @@ data "aws_iam_policy_document" "baseline_guardrails" {
     }
   }
 
-  # Only allow the Terraform deployer role to create, modify, & delete tags that begin
-  # with "devshrekops:demo:". These tags are reserved for use by the Terraform configs
-  # in this repo.
+  # Don't allow any principal other than the Terraform deployer role to create, modify,
+  # & delete tags that begin with "devshrekops:demo:". These tags are reserved for use
+  # by the Terraform configs in this repo.
   statement {
     sid       = "ProtectTerraformTags"
     effect    = "Deny"
@@ -160,8 +160,9 @@ data "aws_iam_policy_document" "baseline_guardrails" {
     }
   }
 
-  # Only allow the Terraform deployer role to perform certain write actions, regardless
-  # of any other factors, such as resource ARN or tags.
+  # Don't allow certain write actions to be performed by any principal other than the
+  # Terraform deployer role, regardless of any other factors, such as resource ARN or
+  # tags.
   statement {
     sid    = "SimpleGuardrails"
     effect = "Deny"
@@ -185,6 +186,26 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       "guardduty:Tag*",
       "guardduty:Untag*",
       "guardduty:Update*",
+      "organizations:Accept*",
+      "organizations:Attach*",
+      "organizations:Cancel*",
+      "organizations:Close*",
+      "organizations:Create*",
+      "organizations:Decline*",
+      "organizations:Delete*",
+      "organizations:Deregister*",
+      "organizations:Detach*",
+      "organizations:Disable*",
+      "organizations:Enable*",
+      "organizations:Invite*",
+      "organizations:Leave*",
+      "organizations:Move*",
+      "organizations:Put*",
+      "organizations:Register*",
+      "organizations:Remove*",
+      "organizations:Tag*",
+      "organizations:Untag*",
+      "organizations:Update*",
     ]
     resources = ["*"]
 
@@ -197,8 +218,8 @@ data "aws_iam_policy_document" "baseline_guardrails" {
     }
   }
 
-  # Only allow the Terraform deployer role to perform certain write actions on resources
-  # that have a tag with key "devshrekops:demo:stage".
+  # Don't allow certain write actions to be performed by any principal other than the
+  # Terraform deployer role on resources that have a "devshrekops:demo:stage" tag.
   statement {
     sid    = "TagBasedGuardrails"
     effect = "Deny"
