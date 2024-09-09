@@ -206,6 +206,23 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       "organizations:Tag*",
       "organizations:Untag*",
       "organizations:Update*",
+      "s3:Associate*",
+      "s3:CreateAccess*",
+      "s3:CreateMulti*",
+      "s3:CreateStorage*",
+      "s3:DeleteAccess*",
+      "s3:DeleteMulti*",
+      "s3:DeleteStorage*",
+      "s3:Disassociate*",
+      "s3:PutAccess*",
+      "s3:PutAccount*",
+      "s3:PutMulti*",
+      "s3:PutStorage*",
+      "s3:Submit*",
+      "s3:Tag*",
+      "s3:Untag*",
+      "s3:UpdateAccess*",
+      "s3:UpdateStorage*",
       "sso:Associate*",
       "sso:Attach*",
       "sso:Create*",
@@ -263,6 +280,46 @@ data "aws_iam_policy_document" "baseline_guardrails" {
       variable = "aws:ResourceTag/devshrekops:demo:stage"
       values   = ["*"]
     }
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalARN"
+      values = [
+        "arn:aws:iam::*:role/tf-deployer-${var.stage}",
+      ]
+    }
+  }
+
+  # Don't allow certain S3 write actions to be performed by any principal other than the
+  # Terraform deployer role on buckets with names beginning with "devshrekops-demo-"
+  # (including objects in those buckets). This guardrail is based on bucket name instead
+  # of tags because AWS doesn't support tag-based policies for actions that target
+  # buckets, and it's often not practical to tag each object.
+  statement {
+    sid    = "ProtectS3Buckets"
+    effect = "Deny"
+    actions = [
+      "s3:Abort*",
+      "s3:Bypass*",
+      "s3:DeleteBucket*",
+      "s3:DeleteObject*",
+      "s3:Initiate*",
+      "s3:Object*",
+      "s3:Pause*",
+      "s3:PutAccelerate*",
+      "s3:PutAnalytics*",
+      "s3:PutBucket*",
+      "s3:PutEncryption*",
+      "s3:PutIntelligent*",
+      "s3:PutInventory*",
+      "s3:PutLifecycle*",
+      "s3:PutMetrics*",
+      "s3:PutObject*",
+      "s3:PutReplication*",
+      "s3:Replicate*",
+      "s3:Restore*",
+    ]
+    resources = ["arn:aws:s3:::devshrekops-demo-*"]
 
     condition {
       test     = "ArnNotLike"
